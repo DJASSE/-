@@ -1,0 +1,1259 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>المعرض التعليمي – برعاية المبرمج جاسر اشلاف</title>
+  <style>
+    /* ============================
+       Reset & Base
+       ============================ */
+    :root{
+      --bg-grad: linear-gradient(135deg, #fffbf0 0%, #e8fff9 50%, #fff0ff 100%);
+      --accent-1: #ff7eb6;   /* neon/pastel hues */
+      --accent-2: #7afcff;
+      --accent-3: #ffd86b;
+      --card-bg: rgba(255,255,255,0.9);
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 24px rgba(75,0,130,0.12);
+      --rounded: 16px;
+      --soft: cubic-bezier(.2,.9,.2,1);
+      font-family: "Segoe UI", "Noto Kufi Arabic", "Tajawal", system-ui, sans-serif;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      background: var(--bg-grad);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-y:scroll;
+      transition: background 0.6s var(--soft);
+      line-height:1.5;
+    }
+
+    /* ============================
+       Layout
+       ============================ */
+    .app{
+      display:flex;
+      min-height:100vh;
+      gap:28px;
+      padding:28px;
+    }
+
+    /* Sidebar / Navbar */
+    .sidebar{
+      width:260px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.7));
+      border-radius:20px;
+      padding:18px;
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:28px;
+      height:calc(100vh - 56px);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      align-items:stretch;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background: radial-gradient(circle at 20% 20%, #fff 0%, #ffd86b 20%, #ff7eb6 70%);
+      display:grid;place-items:center;
+      box-shadow: 0 6px 18px rgba(255,126,182,0.18), inset 0 -6px 20px rgba(0,0,0,0.03);
+      font-weight:800;color:#fff;font-size:20px;
+      transform:rotate(-8deg);
+    }
+    .brand h1{font-size:16px;line-height:1.05;}
+    .brand p{font-size:12px;color:#555;margin-top:4px}
+
+    nav ul{
+      list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:6px;
+    }
+    nav a{
+      display:flex;gap:10px;align-items:center;padding:10px;border-radius:12px;
+      color:#222;text-decoration:none;font-weight:600;
+      transition:all .25s var(--soft);
+    }
+    nav a:hover{transform:translateX(-6px);box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+    nav a .ico{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent-2),var(--accent-1));display:grid;place-items:center;color:#fff;font-weight:700}
+
+    /* Main content */
+    main{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:28px;
+      padding:6px 6px 60px 6px;
+    }
+
+    header.hero{
+      display:flex;gap:18px;align-items:center;
+      background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.35));
+      border-radius:20px;padding:18px;box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .hero .text{
+      flex:1;
+    }
+    .hero h2{
+      font-size:30px;color:#222;margin-bottom:6px;
+      letter-spacing:0.6px;
+    }
+    .hero p{color:#444;opacity:.9}
+    .hero .badge{
+      background:linear-gradient(45deg,var(--accent-1),var(--accent-3));
+      color:white;padding:8px 12px;border-radius:12px;font-weight:800;
+      box-shadow:0 6px 18px rgba(255,126,182,0.12)
+    }
+    .hero .art{
+      width:120px;height:120px;border-radius:18px;
+      background: conic-gradient(from 180deg at 50% 50%, #ffd86b, #ff7eb6, #7afcff);
+      box-shadow: 0 10px 30px rgba(122,252,255,0.12);
+      display:grid;place-items:center;font-size:42px;color:#fff;transform:rotate(-12deg);
+    }
+
+    /* Sections */
+    section{
+      background:var(--card-bg);padding:16px;border-radius:16px;box-shadow:var(--shadow);
+      transition:transform .45s var(--soft),opacity .45s var(--soft);
+      opacity:0; transform:translateY(18px) scale(.995);
+    }
+    section.revealed{opacity:1;transform:none}
+
+    .section-title{
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;
+    }
+    .section-title h3{font-size:20px}
+    .section-title p{color:#666;font-size:13px}
+
+    /* Cards grid */
+    .grid{display:grid;gap:12px}
+    .grid.cards-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cards-2{grid-template-columns:repeat(2,1fr)}
+    @media (max-width:980px){ .app{flex-direction:column;padding:18px} .sidebar{position:relative;width:100%;height:auto;order:2} .grid.cards-3{grid-template-columns:repeat(2,1fr)} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.88));
+      border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;
+      border:1px solid rgba(0,0,0,0.03);
+      transition:transform .25s var(--soft),box-shadow .25s var(--soft);
+    }
+    .card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(0,0,0,0.08)}
+    .card .top{display:flex;justify-content:space-between;align-items:center}
+    .card .meta{display:flex;gap:10px;align-items:center}
+    .project-ico{
+      width:56px;height:56px;border-radius:12px;display:grid;place-items:center;color:#fff;font-weight:800;
+      background:linear-gradient(135deg,var(--accent-2),var(--accent-1));box-shadow:0 8px 18px rgba(122,252,255,0.08);
+      font-size:20px;
+    }
+    .card h4{font-size:16px}
+    .card .actions{display:flex;gap:8px;align-items:center}
+    .btn{
+      padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:700;
+      transition:transform .18s var(--soft),box-shadow .18s var(--soft);
+      display:inline-flex;gap:8px;align-items:center;
+    }
+    .btn:hover{transform:translateY(-4px)}
+    .btn.ghost{background:transparent;border:2px solid rgba(0,0,0,0.06)}
+    .btn.primary{
+      background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
+      color:white;box-shadow:0 8px 20px rgba(255,126,182,0.12);
+    }
+    .btn.highlight{
+      background:linear-gradient(90deg,#fff 0%, rgba(255,255,255,0.8) 100%);
+      border:2px dashed rgba(0,0,0,0.06);
+      color:#333;
+    }
+
+    /* HTML Live preview */
+    .editor{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;
+    }
+    .editor textarea{
+      width:100%;height:260px;border-radius:10px;padding:12px;border:2px solid rgba(0,0,0,0.04);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Courier New", monospace;font-size:13px;
+      resize:vertical; background:linear-gradient(180deg,#fff,#fffdf8);
+    }
+    .preview{
+      border-radius:10px;border:1px solid rgba(0,0,0,0.06);overflow:hidden;height:260px;
+    }
+    .preview iframe{width:100%;height:100%;border:0;display:block}
+
+    /* Instructions icons row */
+    .steps{display:flex;gap:12px;flex-wrap:wrap}
+    .step{
+      flex:1;min-width:200px;padding:12px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffdf8);
+      display:flex;gap:12px;align-items:flex-start;
+    }
+    .step .sico{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent-3),var(--accent-1));display:grid;place-items:center;color:#fff;font-weight:800}
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(2,6,23,0.45);display:none;place-items:center;padding:18px;z-index:9999;
+    }
+    .modal-backdrop.show{display:grid}
+    .modal{
+      width:920px;max-width:calc(100% - 32px);background:white;border-radius:14px;padding:18px;box-shadow:0 36px 80px rgba(8,8,10,0.45);
+    }
+    .modal .code{
+      background:#0b1020;color:#e6f3ff;padding:12px;border-radius:10px;height:320px;overflow:auto;font-family:ui-monospace,monospace;font-size:13px;
+    }
+    .modal .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+
+    /* Footer */
+    footer{
+      margin-top:8px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+      display:flex;justify-content:space-between;align-items:center;gap:12px;box-shadow:var(--shadow)
+    }
+
+    /* Little decorative floating shapes */
+    .float-shape{
+      position:fixed;pointer-events:none;opacity:0.14;mix-blend-mode:screen;filter:blur(6px);
+    }
+    .float1{right:10px;top:120px;width:160px;height:160px;background:radial-gradient(circle,#ff7eb6,#ffd86b)}
+    .float2{left:20px;bottom:120px;width:220px;height:220px;background:radial-gradient(circle,#7afcff,#b28cff)}
+
+    /* small screens */
+    @media (max-width:720px){
+      .grid.cards-3{grid-template-columns:1fr}
+      .editor{grid-template-columns:1fr}
+      .sidebar{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="float-shape float1" aria-hidden="true"></div>
+  <div class="float-shape float2" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="قائمة المعرض">
+      <div class="brand">
+        <div class="logo">م</div>
+        <div>
+          <h1>المعرض التعليمي</h1>
+          <p>برعاية المبرمج جاسر اشلاف</p>
+        </div>
+      </div>
+
+      <nav>
+        <ul>
+          <li><a href="#home"><span class="ico">🏠</span>الصفحة الرئيسية</a></li>
+          <li><a href="#py-projects"><span class="ico">🐍</span>مشاريع بايثون</a></li>
+          <li><a href="#html-projects"><span class="ico">🖥️</span>مشاريع HTML</a></li>
+          <li><a href="#guide"><span class="ico">📚</span>تعليمات</a></li>
+          <li><a href="#about"><span class="ico">ℹ️</span>عن المعرض</a></li>
+        </ul>
+      </nav>
+
+      <div style="margin-top:auto">
+        <button class="btn primary" onclick="scrollToTop()" aria-label="العودة للأعلى">↑ العودة للأعلى</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main>
+<!-- Hero -->
+<header id="home" class="hero" data-reveal>
+  <div class="text">
+    <div class="badge">المعرض التعليمي</div>
+    <h2>مرحبًا بك 👋 في عالم الأكواد معا جاسر!</h2>
+    <p>تعلم من المستوى المبتدئ حتى المبرمج المحترف مع مشاريع ممتعة ومقسمة بوضوح 🎮✨</p>
+  </div>
+
+  <!-- بطاقة المبرمج -->
+  <div class="card">
+    <div class="emoji">👨‍💻</div>
+    <h3>جاسر اشلاف</h3>
+    <p class="role">مبرمج & مصمم واجهات</p>
+    <p class="quote">"اكتب الكود بابتسامة 😄"</p>
+  </div>
+</header>
+
+<style>
+/* خلفية الـ Hero */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 60px;
+  background: linear-gradient(135deg, #fffdf7, #f2fbff);
+  font-family: "Tajawal", sans-serif;
+  overflow: hidden;
+}
+
+/* النص */
+.hero .text {
+  max-width: 500px;
+  animation: fadeInLeft 1.5s ease-in-out;
+}
+.hero .badge {
+  display: inline-block;
+  background: #ff7eb6;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-bottom: 12px;
+  animation: pulse 2s infinite;
+}
+
+/* البطاقة */
+.card {
+  width: 340px; /* 📌 صارت أوسع */
+  text-align: center;
+  background: linear-gradient(135deg, #ff7eb6, #7afcff);
+  color: white;
+  padding: 30px; /* زيادة مساحة داخلية */
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 
+              0 0 15px rgba(255, 255, 255, 0.15) inset;
+  transform: scale(0.95);
+  opacity: 0;
+  animation: popIn 1.5s ease-out forwards 0.5s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12),
+              0 0 25px rgba(255,255,255,0.2) inset;
+}
+.card .emoji {
+  font-size: 65px; /* كبرت الايموجي يتناسب مع العرض */
+  margin-bottom: 12px;
+}
+.card h3 {
+  margin: 10px 0;
+  font-size: 20px;
+}
+.card .role {
+  font-size: 15px;
+  opacity: 0.9;
+}
+.card .quote {
+  font-size: 13px;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+/* أنيميشن */
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes popIn {
+  from { transform: scale(0.85) rotate(-5deg); opacity: 0; }
+  to { transform: scale(0.95) rotate(0); opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+</style>
+
+
+<section id="py-projects" data-reveal>
+  <div class="section-title">
+    <div>
+      <h3>مشاريع بايثون</h3>
+      <p>مشاريع عملية صغيرة — اضغط "جرّب الكود" لعرض الكود ونسخه.</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <small style="color:#666">عدد المشاريع: 10</small>
+    </div>
+  </div>
+
+  <div class="grid cards-3">
+    <!-- 1 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>حاسبة الأعداد الأولية</h4>
+            <div style="font-size:12px;color:#666">يتحقق ما إذا كان الرقم أوليًا</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="primeChecker" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">أدخل رقمًا وستعرف إن كان أوليًا أم لا.</p>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>مولّد كلمات مرور</h4>
+            <div style="font-size:12px;color:#666">ينشئ كلمة مرور عشوائية آمنة</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="pwGen" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">ينشئ كلمات مرور قوية باستخدام مكتبة random.</p>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>محوّل العملات</h4>
+            <div style="font-size:12px;color:#666">يحوّل بين الدولار واليورو والريال</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="currencyConverter" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">مشروع عملي للتعامل مع أسعار الصرف.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>آلة حاسبة</h4>
+            <div style="font-size:12px;color:#666">تنفذ عمليات الجمع والطرح والضرب والقسمة</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="calculator" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">حاسبة بسيطة بالأوامر النصية.</p>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>عداد الكلمات</h4>
+            <div style="font-size:12px;color:#666">يحسب عدد الكلمات في النص</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="wordCounter" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">مفيد لمدققي النصوص أو الطلاب.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>لعبة التخمين</h4>
+            <div style="font-size:12px;color:#666">يحاول اللاعب تخمين رقم عشوائي</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="guessGame" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">مسلية وتعلمك استخدام الحلقات.</p>
+    </div>
+
+    <!-- 7 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>منظّم المهام (To-Do)</h4>
+            <div style="font-size:12px;color:#666">يحفظ ويعرض قائمة بالمهام</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="todoList" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">تطبيق مفيد لترتيب مهامك اليومية.</p>
+    </div>
+
+    <!-- 8 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>محوّل درجات الحرارة</h4>
+            <div style="font-size:12px;color:#666">يحوّل بين °C و °F</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="tempConverter" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">مفيد للطلاب في مادة العلوم.</p>
+    </div>
+
+    <!-- 9 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>عداد الحروف</h4>
+            <div style="font-size:12px;color:#666">يحسب عدد الحروف في النص</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="charCounter" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">تحليل بسيط للنصوص.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">Py</div>
+          <div>
+            <h4>مولّد جدول الضرب</h4>
+            <div style="font-size:12px;color:#666">يطبع جدول ضرب لأي رقم</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-py="multTable" onclick="openPyModal(event)">جرّب الكود</button>
+        </div>
+      </div>
+      <p style="color:#555;font-size:13px">مشروع تدريبي على الحلقات (Loops).</p>
+    </div>
+  </div>
+</section>
+
+<!-- أكواد بايثون -->
+<script type="text/template" id="primeChecker">
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5)+1):
+        if n % i == 0:
+            return False
+    return True
+
+num = int(input("أدخل رقمًا: "))
+print("عدد أولي" if is_prime(num) else "ليس عددًا أوليًا")
+</script>
+
+<script type="text/template" id="pwGen">
+import random, string
+length = 12
+chars = string.ascii_letters + string.digits + "!@#$%^&*"
+password = "".join(random.choice(chars) for _ in range(length))
+print("كلمة المرور:", password)
+</script>
+
+<script type="text/template" id="currencyConverter">
+rates = {"USD": 1, "EUR": 0.9, "SAR": 3.75}
+amount = float(input("أدخل المبلغ بالدولار: "))
+for cur, rate in rates.items():
+    print(f"{cur}: {amount * rate:.2f}")
+</script>
+
+<script type="text/template" id="calculator">
+a = float(input("أدخل العدد الأول: "))
+op = input("اختر العملية (+ - * /): ")
+b = float(input("أدخل العدد الثاني: "))
+if op == "+": print(a+b)
+elif op == "-": print(a-b)
+elif op == "*": print(a*b)
+elif op == "/": print(a/b if b!=0 else "قسمة على صفر!")
+else: print("عملية غير صالحة")
+</script>
+
+<script type="text/template" id="wordCounter">
+text = input("أدخل نصًا: ")
+words = text.split()
+print("عدد الكلمات:", len(words))
+</script>
+
+<script type="text/template" id="guessGame">
+import random
+num = random.randint(1, 10)
+guess = int(input("خمن رقمًا بين 1 و 10: "))
+print("صحيح!" if guess == num else f"خطأ! الرقم كان {num}")
+</script>
+
+<script type="text/template" id="todoList">
+tasks = []
+while True:
+    choice = input("أضف (a) أو اعرض (s) أو اخرج (q): ")
+    if choice == "a":
+        tasks.append(input("أدخل مهمة: "))
+    elif choice == "s":
+        print("مهامك:", tasks)
+    elif choice == "q":
+        break
+</script>
+
+<script type="text/template" id="tempConverter">
+c = float(input("أدخل الحرارة بالسيلسيوس: "))
+f = (c * 9/5) + 32
+print(f"{c}°C = {f}°F")
+</script>
+
+<script type="text/template" id="charCounter">
+text = input("أدخل نصًا: ")
+print("عدد الحروف:", len(text))
+</script>
+
+<script type="text/template" id="multTable">
+n = int(input("أدخل رقمًا: "))
+for i in range(1, 11):
+    print(f"{n} x {i} = {n*i}")
+</script>
+
+     <!-- HTML Projects -->
+<section id="html-projects" data-reveal>
+  <div class="section-title">
+    <div>
+      <h3>مشاريع HTML — معاينات مباشرة</h3>
+      <p>حرّر وعاين الكود مباشرة في المتصفح (مشاريع معقدة).</p>
+    </div>
+    <div>
+      <small style="color:#666">عدد المشاريع: 10</small>
+    </div>
+  </div>
+
+  <div class="grid cards-2">
+    <!-- مشروع 1: آلة حاسبة علمية -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">HTML</div>
+          <div>
+            <h4>آلة حاسبة علمية</h4>
+            <div style="font-size:12px;color:#666">عمليات أساسية + دوال علمية</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn highlight" onclick="loadHtmlProject(1)">افتح المحرر</button>
+        </div>
+      </div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-1">
+<!doctype html>
+<html>
+<head>
+<style>
+  body{font-family:Arial;text-align:center;margin:20px}
+  input{width:250px;padding:8px;font-size:18px}
+  button{margin:3px;padding:10px 15px;font-size:16px}
+</style>
+</head>
+<body>
+  <h3>آلة حاسبة</h3>
+  <input id="calc" readonly>
+  <div>
+    <button onclick="calc.value += '1'">1</button>
+    <button onclick="calc.value += '2'">2</button>
+    <button onclick="calc.value += '3'">3</button>
+    <button onclick="calc.value += '+'">+</button>
+  </div>
+  <div>
+    <button onclick="calc.value += 'sin('">sin</button>
+    <button onclick="calc.value += 'cos('">cos</button>
+    <button onclick="calc.value += 'sqrt('">√</button>
+    <button onclick="calc.value=''">C</button>
+  </div>
+  <div>
+    <button onclick="calc.value = eval(calc.value)">=</button>
+  </div>
+<script>
+  const calc=document.getElementById("calc");
+  function evalExp(exp){return Function("return " + exp)();}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(1)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-1"><iframe id="iframe-1" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 2: محرر نصوص متقدم -->
+    <div class="card">
+      <div class="top">
+        <div class="meta">
+          <div class="project-ico">HTML</div>
+          <div>
+            <h4>محرر نصوص متقدم</h4>
+            <div style="font-size:12px;color:#666">تحرير نصوص مثل Word</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn highlight" onclick="loadHtmlProject(2)">افتح المحرر</button>
+        </div>
+      </div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-2">
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body{font-family:Arial;padding:20px}
+    #toolbar button{margin:3px;padding:6px 10px}
+    #editor{border:1px solid #ccc;min-height:150px;padding:10px}
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <button onclick="exec('bold')">B</button>
+    <button onclick="exec('italic')">I</button>
+    <button onclick="exec('underline')">U</button>
+    <button onclick="exec('insertUnorderedList')">•</button>
+  </div>
+  <div id="editor" contenteditable="true">✍️ اكتب هنا…</div>
+<script>
+  function exec(cmd){document.execCommand(cmd,false,null);}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(2)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-2"><iframe id="iframe-2" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 3: مولّد شهادة -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>مولّد شهادة</h4><div style="font-size:12px;color:#666">أدخل اسمك واطبع شهادة</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(3)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-3">
+<!doctype html>
+<html>
+<head><style>
+  body{text-align:center;font-family:Arial}
+  .cert{border:4px solid #333;padding:40px;margin:20px}
+</style></head>
+<body>
+  <h2>مولّد شهادة</h2>
+  <input id="name" placeholder="اسمك">
+  <button onclick="gen()">إنشاء</button>
+  <div id="out"></div>
+<script>
+function gen(){
+  let n=document.getElementById("name").value;
+  document.getElementById("out").innerHTML=
+    "<div class='cert'><h1>شهادة تقدير</h1><p>ممنوحة إلى <b>"+n+"</b></p></div>";
+}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(3)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-3"><iframe id="iframe-3" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 4: لوحة بيانات بيانية -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>لوحة إحصائيات</h4><div style="font-size:12px;color:#666">عرض رسومات بيانية</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(4)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-4">
+<!doctype html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="myChart"></canvas>
+<script>
+  new Chart(document.getElementById("myChart"),{
+    type:"bar",
+    data:{labels:["A","B","C"],datasets:[{label:"قيم",data:[5,7,3],backgroundColor:["red","green","blue"]}]}
+  });
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(4)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-4"><iframe id="iframe-4" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 5: قائمة مهام -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>قائمة مهام</h4><div style="font-size:12px;color:#666">إضافة/حذف مهام مع تخزين</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(5)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-5">
+<!doctype html>
+<html>
+<head><style>
+  li{margin:4px 0}
+</style></head>
+<body>
+  <input id="task"><button onclick="add()">إضافة</button>
+  <ul id="list"></ul>
+<script>
+  let list=document.getElementById("list");
+  function add(){
+    let t=document.getElementById("task").value;
+    let li=document.createElement("li");
+    li.textContent=t;
+    li.onclick=()=>li.remove();
+    list.appendChild(li);
+    save();
+  }
+  function save(){localStorage.tasks=list.innerHTML;}
+  window.onload=()=>{list.innerHTML=localStorage.tasks||"";}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(5)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-5"><iframe id="iframe-5" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 6: معرض صور مع Lightbox -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>معرض صور</h4><div style="font-size:12px;color:#666">فتح الصور في نافذة منبثقة</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(6)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-6">
+<!doctype html>
+<html>
+<head><style>
+  img{width:100px;margin:5px;cursor:pointer}
+  #lightbox{position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;display:none;justify-content:center;align-items:center}
+  #lightbox img{max-width:80%;max-height:80%}
+</style></head>
+<body>
+  <img src="https://picsum.photos/200?1" onclick="show(this.src)">
+  <img src="https://picsum.photos/200?2" onclick="show(this.src)">
+  <div id="lightbox" onclick="this.style.display='none'"><img></div>
+<script>
+  function show(src){let lb=document.getElementById("lightbox");lb.style.display="flex";lb.querySelector("img").src=src;}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(6)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-6"><iframe id="iframe-6" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 7: آلة موسيقية -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>آلة موسيقية</h4><div style="font-size:12px;color:#666">عزف نغمات بلوحة المفاتيح</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(7)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-7">
+<!doctype html>
+<html>
+<body>
+  <button onclick="play(261)">دو</button>
+  <button onclick="play(293)">ري</button>
+  <button onclick="play(329)">مي</button>
+<script>
+  const ctx=new AudioContext();
+  function play(f){let o=ctx.createOscillator();o.frequency.value=f;o.connect(ctx.destination);o.start();o.stop(ctx.currentTime+0.5);}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(7)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-7"><iframe id="iframe-7" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 8: محرك بحث نصوص -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>محرك بحث نصوص</h4><div style="font-size:12px;color:#666">تمييز الكلمة في النص</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(8)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-8">
+<!doctype html>
+<html>
+<body>
+  <input id="q" placeholder="ابحث">
+  <button onclick="search()">بحث</button>
+  <p id="text">هذا نص تجريبي يحتوي على كلمات مكررة: برمجة، كود، برمجة.</p>
+<script>
+function search(){
+  let q=document.getElementById("q").value;
+  let t=document.getElementById("text").textContent;
+  let reg=new RegExp(q,"gi");
+  document.getElementById("text").innerHTML=t.replace(reg,m=>"<mark>"+m+"</mark>");
+}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(8)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-8"><iframe id="iframe-8" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 9: واجهة دردشة وهمية -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>واجهة دردشة</h4><div style="font-size:12px;color:#666">تصميم شبيه بالواتساب</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(9)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-9">
+<!doctype html>
+<html>
+<head><style>
+  body{font-family:sans-serif;background:#eee}
+  .chat{max-width:300px;margin:auto;border:1px solid #ccc;background:#fff;padding:10px}
+  .msg{padding:8px;margin:5px;border-radius:6px}
+  .me{background:#dcf8c6;text-align:right}
+  .other{background:#eee}
+</style></head>
+<body>
+  <div class="chat">
+    <div class="msg me">مرحبا 👋</div>
+    <div class="msg other">أهلا!</div>
+    <input id="m"><button onclick="send()">إرسال</button>
+  </div>
+<script>
+function send(){
+  let m=document.getElementById("m").value;
+  let d=document.createElement("div");d.className="msg me";d.textContent=m;
+  document.querySelector(".chat").appendChild(d);
+}
+</script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(9)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-9"><iframe id="iframe-9" sandbox="allow-scripts"></iframe></div>
+    </div>
+
+    <!-- مشروع 10: مؤقت Pomodoro -->
+    <div class="card">
+      <div class="top"><div class="meta"><div class="project-ico">HTML</div><div><h4>مؤقت بومودورو</h4><div style="font-size:12px;color:#666">25 دقيقة + إشعارات</div></div></div><div class="actions"><button class="btn highlight" onclick="loadHtmlProject(10)">افتح المحرر</button></div></div>
+      <div class="editor small-editor" style="margin-top:8px">
+<textarea id="html-editor-10">
+<!doctype html>
+<html>
+<body>
+  <h2 id="timer">25:00</h2>
+  <button onclick="start()">ابدأ</button>
+  <script>
+    let time=25*60,interval;
+    function start(){
+      interval=setInterval(()=>{
+        let m=Math.floor(time/60),s=time%60;
+        document.getElementById("timer").textContent=m+":"+("0"+s).slice(-2);
+        if(time--<=0){clearInterval(interval);alert("انتهى الوقت!");}
+      },1000);
+    }
+  </script>
+</body>
+</html>
+</textarea>
+        <button class="btn primary" onclick="previewHtml(10)">معاينة</button>
+      </div>
+      <div class="preview" id="preview-10"><iframe id="iframe-10" sandbox="allow-scripts"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<script>
+function loadHtmlProject(i){
+  document.getElementById("preview-"+i).setAttribute("aria-hidden","false");
+}
+function previewHtml(i){
+  let code=document.getElementById("html-editor-"+i).value;
+  let iframe=document.getElementById("iframe-"+i);
+  iframe.srcdoc=code;
+}
+</script>
+
+
+      <!-- Guide / Instructions -->
+      <section id="guide" data-reveal>
+        <div class="section-title">
+          <div>
+            <h3>التعليمات — خطوات مبسطة</h3>
+            <p>ثلاث خطوات سريعة لتبدأ بالتجربة والتعلم.</p>
+          </div>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="sico">1</div>
+            <div>
+              <h4 style="margin:0 0 6px 0">اختر مشروعًا</h4>
+              <p style="margin:0;color:#555">ابدأ من كرت بسيط — بايثون أو HTML. اضغط "جرّب الكود" أو افتح المحرر.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="sico">2</div>
+            <div>
+              <h4 style="margin:0 0 6px 0">جرّب وعدّل</h4>
+              <p style="margin:0;color:#555">في مشاريع HTML عدّل النص أو الألوان ثم اضغط "معاينة" لترى النتيجة فورًا.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="sico">3</div>
+            <div>
+              <h4 style="margin:0 0 6px 0">نفّذ محليًا</h4>
+              <p style="margin:0;color:#555">لمشاريع بايثون انسخ الكود إلى محرر بايثون محلي أو استعمل بيئة مثل Replit/Colab لتشغيله.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" data-reveal>
+        <div class="section-title">
+          <div>
+            <h3>عن المعرض</h3>
+            <p>المعرض التعليمي صُمم ليوفر تجربة تعليمية مرحة وبسيطة للمبتدئين و الهواة.</p>
+          </div>
+        </div>
+
+        <p style="color:#555">هذا المشروع من تصميم وبرمجة: جاسر اشلاف — يتضمن أمثلة تعليمية لمشاريع بايثون وHTML. يمكنك نسخ الأكواد، تعديلها، وتجريبها بنفسك. التصميم حمل طابعًا كرتونيًا لخلق جو ممتع ومحفّز على التعلم.</p>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <div>برعاية المبرمج جاسر اشلاف – 2025 <span style="color:#ff4d6d;margin-left:8px">❤️</span></div>
+        <div style="font-size:13px;color:#666">تم تصميم الواجهة بأسلوب كرتون/أنمي — خطوط كبيرة، ألوان زاهية، حواف دائرية.</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Modal for Python code -->
+  <div id="modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" role="document">
+      <div class="meta">
+        <div>
+          <strong id="modal-title">كود المشروع</strong>
+          <div style="font-size:12px;color:#666" id="modal-sub">انسخ الكود وشغّله في بيئة بايثون محلية أو عبر Replit.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn ghost" onclick="closeModal()">إغلاق</button>
+          <button class="btn primary" id="copy-btn" onclick="copyCode()">نسخ الكود</button>
+        </div>
+      </div>
+
+      <pre class="code" id="modal-code" tabindex="0" aria-label="محتوى الكود"></pre>
+    </div>
+  </div>
+
+  <script>
+    /* =============================
+       Data (Python code snippets)
+       =============================*/
+    const pySnippets = {
+      primeChecker: {
+        title: "حاسبة الأعداد الأولية - Python",
+        code:
+`# برنامج بسيط للتحقق إن كان رقم صحيحًا أوليًا أم لا
+def is_prime(n):
+    if n <= 1:
+        return False
+    if n <= 3:
+        return True
+    if n % 2 == 0:
+        return False
+    i = 3
+    while i * i <= n:
+        if n % i == 0:
+            return False
+        i += 2
+    return True
+
+if __name__ == "__main__":
+    try:
+        x = int(input("أدخل رقمًا: "))
+        if is_prime(x):
+            print(f"{x} عدد أولي ✅")
+        else:
+            print(f"{x} ليس عددًا أوليًا ❌")
+    except ValueError:
+        print("يرجى إدخال رقم صحيح.")`
+      },
+
+      pwGen: {
+        title: "مولّد كلمات مرور آمن - Python",
+        code:
+`# مولد كلمات مرور عشوائية
+import secrets
+import string
+
+def generate_password(length=12, use_symbols=True):
+    alphabet = string.ascii_letters + string.digits
+    if use_symbols:
+        alphabet += "!@#$%^&*()-_=+[]{};:,.?/|"
+    return ''.join(secrets.choice(alphabet) for _ in range(length))
+
+if __name__ == "__main__":
+    print("كلمة مرور مقترحة:", generate_password(12, True))`
+      },
+
+      tokenizer: {
+        title: "مفكك النصوص (Tokenizer) بسيط - Python",
+        code:
+`# تقسيم النص إلى كلمات بسيطة مع إزالة علامات الترقيم
+import re
+
+def simple_tokenize(text):
+    # إزالة علامات الترقيم باستبدالها بمسافات
+    cleaned = re.sub(r'[^\w\s]', ' ', text)
+    # تقسيم على الفراغات
+    tokens = cleaned.split()
+    return tokens
+
+if __name__ == "__main__":
+    s = "مرحباً! هذا مثال على تقسيم النص، وإخراج الكلمات."
+    print(simple_tokenize(s))`
+      }
+    };
+
+    /* =============================
+       Modal logic for Python code
+       =============================*/
+    const modal = document.getElementById('modal');
+    const modalCode = document.getElementById('modal-code');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSub = document.getElementById('modal-sub');
+    
+function openPyModal(e){
+  const key = e.currentTarget.dataset.py;
+  const codeBlock = document.getElementById(key);
+  if(!codeBlock) return;
+
+  modalTitle.textContent = e.currentTarget.closest(".card").querySelector("h4").textContent;
+  modalCode.textContent = codeBlock.textContent.trim();
+  modalSub.textContent = "انسخ الكود وشغّله في محرر بايثون محلي أو عبر موقع مثل Replit.com.";
+  
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  modalCode.focus();
+}
+
+
+    function closeModal(){
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    function copyCode(){
+      const text = modalCode.textContent;
+      navigator.clipboard?.writeText(text).then(()=>{
+        const old = document.getElementById('copy-btn').textContent;
+        document.getElementById('copy-btn').textContent = 'تم النسخ ✅';
+        setTimeout(()=> document.getElementById('copy-btn').textContent = 'نسخ الكود', 1400);
+      }).catch(()=>{
+        alert('فشل النسخ — الرجاء نسخه يدويًا.');
+      });
+    }
+
+    // close modal on backdrop click
+    modal.addEventListener('click', (ev)=>{
+      if(ev.target === modal) closeModal();
+    });
+    // close with Esc
+    window.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Escape') closeModal();
+    });
+
+    /* =============================
+       HTML Live preview logic
+       =============================*/
+    function previewHtml(n){
+      const editor = document.getElementById('html-editor-' + n);
+      const iframe = document.getElementById('iframe-' + n);
+      if(!editor || !iframe) return;
+      // set iframe srcdoc
+      iframe.srcdoc = editor.value;
+      // mark preview visible for screen readers
+      const parentPreview = document.getElementById('preview-' + n);
+      parentPreview.setAttribute('aria-hidden','false');
+    }
+
+    // open editor focus (for small UI)
+    function loadHtmlProject(n){
+      const editor = document.getElementById('html-editor-' + n);
+      if(!editor) return;
+      editor.focus();
+      // Also auto-preview initial content
+      previewHtml(n);
+    }
+
+    // auto-preview while typing (debounced)
+    let debounceTimers = {};
+    document.querySelectorAll('textarea[id^="html-editor-"]').forEach(textarea=>{
+      textarea.addEventListener('input', (e)=>{
+        const id = e.target.id.split('-').pop();
+        if(debounceTimers[id]) clearTimeout(debounceTimers[id]);
+        debounceTimers[id] = setTimeout(()=> previewHtml(id), 450);
+      });
+    });
+
+    /* =============================
+       Scroll reveal (IntersectionObserver)
+       =============================*/
+    const revealElems = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('revealed');
+          // once revealed, unobserve for performance
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {threshold: 0.12});
+    revealElems.forEach(el => observer.observe(el));
+
+    /* Smooth scroll for nav links */
+    document.querySelectorAll('nav a').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        const target = document.querySelector(href);
+        if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+      });
+    });
+
+    /* Scroll-to-top */
+    function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}) }
+
+    /* Tiny playful hover glow using JS (adds class on hover for stronger effect) */
+    document.querySelectorAll('.project-ico').forEach(el=>{
+      el.addEventListener('mouseenter', ()=> el.style.transform='scale(1.06) rotate(-6deg)');
+      el.addEventListener('mouseleave', ()=> el.style.transform='none');
+    });
+
+    /* Accessibility: focus outlines */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'Tab') document.body.classList.add('show-focus');
+    });
+
+    // Initial previews (so projects show a result on load)
+    window.addEventListener('load', ()=>{
+      previewHtml(1);
+      previewHtml(2);
+    });
+  </script>
+</body>
+</html>
